@@ -3,11 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, ToastAndroid, Picker, FlatList, TextInput } from 'react-native';
 import socketIO from 'socket.io-client';
 
+interface MessagesInterface {
+	id: string;
+	userDe: string;
+	userPara: string;
+	message: string;
+}
+
 //Declaração com let para ser iniciado no useEffect, e para ser usado em outros locais
 let socket: SocketIOClient.Socket;
 
 export default function App() {
-	const [mensagems, setMensagems] = useState<string[]>([]);
+	const [mensagems, setMensagems] = useState<MessagesInterface[]>([]);
 	const [msg, setMsg] = useState('');
 	const [userLogado, setUserLogado] = useState('0');
 	const [userDestino, setUserDestino] = useState('0');
@@ -30,14 +37,17 @@ export default function App() {
 		});
 
 		//Escuta
-		//Quando este client perder conexão
-		socket.on('disconnect', (data: string) => {
-			//ToastAndroid.show('Chat - Desconectado', ToastAndroid.LONG);
+		//Este evento recebe tudo que vier do evento 'message' do servidor
+		socket.on('oldmessages', (data: MessagesInterface[]) => {
+			//ToastAndroid.show(data, ToastAndroid.LONG);
+			data.forEach(msg => {
+				setMensagems(prev => [...prev, msg]);
+			});
 		});
 
 		//Escuta
 		//Este evento recebe tudo que vier do evento 'message' do servidor
-		socket.on('messageroom', (data: string) => {
+		socket.on('messageroom', (data: MessagesInterface) => {
 			//ToastAndroid.show(data, ToastAndroid.LONG);
 			setMensagems(prev => [...prev, data]);
 		});
@@ -46,6 +56,12 @@ export default function App() {
 		//Este evento recebe tudo que vier do evento 'ping' do servidor.
 		socket.on('ping', (data: string) => {
 			setPing(data || '');
+		});
+
+		//Escuta
+		//Quando este client perder conexão
+		socket.on('disconnect', (data: string) => {
+			//ToastAndroid.show('Chat - Desconectado', ToastAndroid.LONG);
 		});
 	}, [userLogado]);
 
@@ -78,11 +94,11 @@ export default function App() {
 				}}
 			>
 				<Picker.Item label="-" value="0" />
-				<Picker.Item label="A" value="1" />
-				<Picker.Item label="B" value="2" />
-				<Picker.Item label="C" value="3" />
-				<Picker.Item label="D" value="4" />
-				<Picker.Item label="E" value="5" />
+				<Picker.Item label="1 - Professor" value="1" />
+				<Picker.Item label="2 - Aluno" value="2" />
+				<Picker.Item label="3 - Aluno" value="3" />
+				<Picker.Item label="4 - Professor" value="4" />
+				<Picker.Item label="5 - Aluno" value="5" />
 			</Picker>
 
 			<Text>Origem:</Text>
@@ -98,11 +114,11 @@ export default function App() {
 				}}
 			>
 				<Picker.Item label="-" value="0" />
-				<Picker.Item label="A" value="1" />
-				<Picker.Item label="B" value="2" />
-				<Picker.Item label="C" value="3" />
-				<Picker.Item label="D" value="4" />
-				<Picker.Item label="E" value="5" />
+				<Picker.Item label="1 - Professor" value="1" />
+				<Picker.Item label="2 - Aluno" value="2" />
+				<Picker.Item label="3 - Aluno" value="3" />
+				<Picker.Item label="4 - Professor" value="4" />
+				<Picker.Item label="5 - Aluno" value="5" />
 			</Picker>
 
 			<Text>{ping}</Text>
@@ -116,17 +132,35 @@ export default function App() {
 					borderWidth: 1,
 				}}
 				data={mensagems}
-				renderItem={data => (
-					<Text
-						style={{
-							width: 300,
-							borderBottomColor: 'black',
-							borderBottomWidth: 1,
-						}}
-					>
-						{data.item}
-					</Text>
-				)}
+				renderItem={data =>
+					data.item.userDe === userLogado ? (
+						<Text
+							style={{
+								width: 300,
+								borderBottomColor: 'black',
+								borderBottomWidth: 1,
+								fontSize: 15,
+								fontWeight: '700',
+								textAlign: 'right',
+								padding: 5,
+							}}
+						>
+							{data.item.message}
+						</Text>
+					) : (
+						<Text
+							style={{
+								width: 300,
+								borderBottomColor: 'black',
+								borderBottomWidth: 1,
+								fontSize: 15,
+								padding: 5,
+							}}
+						>
+							{data.item.message}
+						</Text>
+					)
+				}
 				keyExtractor={(item, index) => index.toString()}
 			/>
 			<TextInput
