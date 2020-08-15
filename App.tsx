@@ -149,7 +149,7 @@ export default function App() {
 								padding: 5,
 							}}
 						>
-							{data.item.message}
+							{data.item.message} (Eu {data.item.userDe})
 						</Text>
 					) : (
 						<Text
@@ -161,7 +161,7 @@ export default function App() {
 								padding: 5,
 							}}
 						>
-							{data.item.message}
+							{'(' + data.item.userDe + ') ' + data.item.message}
 						</Text>
 					)
 				}
