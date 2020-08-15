@@ -22,7 +22,14 @@ export default function App() {
 
 	//Ao acessar a primeira vez
 	useEffect(() => {
+		//Limpando historico
+		setMensagems([]);
+		setMsg('');
+
+		//Verificações
 		if (!userLogado || userLogado === '0') return;
+		if (!userDestino || userDestino === '0') return;
+		if (userLogado === userDestino) return;
 
 		// socket = socketIO('http://192.168.1.10:3000', {
 		// 	transports: ['websocket'],
@@ -30,7 +37,7 @@ export default function App() {
 		socket = socketIO('http://localhost:3000');
 
 		//Escuta
-		//Quando este client encontrar o servidor
+		//Quando este client encontrar o servidor, realiza o login
 		socket.on('connect', () => {
 			//ToastAndroid.show('Chat - Conectado', ToastAndroid.LONG);
 			socket.emit('login', userLogado, userDestino);
@@ -40,9 +47,7 @@ export default function App() {
 		//Este evento recebe tudo que vier do evento 'message' do servidor
 		socket.on('oldmessages', (data: MessagesInterface[]) => {
 			//ToastAndroid.show(data, ToastAndroid.LONG);
-			data.forEach(msg => {
-				setMensagems(prev => [...prev, msg]);
-			});
+			setMensagems(data);
 		});
 
 		//Escuta
@@ -63,7 +68,7 @@ export default function App() {
 		socket.on('disconnect', (data: string) => {
 			//ToastAndroid.show('Chat - Desconectado', ToastAndroid.LONG);
 		});
-	}, [userLogado]);
+	}, [userLogado, userDestino]);
 
 	//Ao fechar ou dar novo build
 	useEffect(() => {
@@ -81,26 +86,6 @@ export default function App() {
 
 	return (
 		<View style={styles.container}>
-			<Text>Destino:</Text>
-			<Picker
-				selectedValue={userDestino}
-				style={{
-					height: 40,
-					width: 300,
-					textAlign: 'center',
-				}}
-				onValueChange={itemValue => {
-					setUserDestino(itemValue);
-				}}
-			>
-				<Picker.Item label="-" value="0" />
-				<Picker.Item label="1 - Professor" value="1" />
-				<Picker.Item label="2 - Aluno" value="2" />
-				<Picker.Item label="3 - Aluno" value="3" />
-				<Picker.Item label="4 - Professor" value="4" />
-				<Picker.Item label="5 - Aluno" value="5" />
-			</Picker>
-
 			<Text>Origem:</Text>
 			<Picker
 				selectedValue={userLogado}
@@ -111,6 +96,25 @@ export default function App() {
 				}}
 				onValueChange={itemValue => {
 					setUserLogado(itemValue);
+				}}
+			>
+				<Picker.Item label="-" value="0" />
+				<Picker.Item label="1 - Professor" value="1" />
+				<Picker.Item label="2 - Aluno" value="2" />
+				<Picker.Item label="3 - Aluno" value="3" />
+				<Picker.Item label="4 - Professor" value="4" />
+				<Picker.Item label="5 - Aluno" value="5" />
+			</Picker>
+			<Text>Destino:</Text>
+			<Picker
+				selectedValue={userDestino}
+				style={{
+					height: 40,
+					width: 300,
+					textAlign: 'center',
+				}}
+				onValueChange={itemValue => {
+					setUserDestino(itemValue);
 				}}
 			>
 				<Picker.Item label="-" value="0" />
