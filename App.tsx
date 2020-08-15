@@ -27,7 +27,7 @@ export default function App() {
 		// socket = socketIO('http://192.168.1.10:3000', {
 		// 	transports: ['websocket'],
 		// });
-		socket = socketIO('http://192.168.1.10:3000');
+		socket = socketIO('http://localhost:3000');
 
 		//Escuta
 		//Quando este client encontrar o servidor
