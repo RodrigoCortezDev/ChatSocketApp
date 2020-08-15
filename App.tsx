@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, ToastAndroid, Picker, FlatList, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ToastAndroid, Picker, FlatList, TextInput } from 'react-native';
 import socketIO from 'socket.io-client';
 
 interface MessagesInterface {
@@ -144,9 +144,8 @@ export default function App() {
 								borderBottomColor: 'black',
 								borderBottomWidth: 1,
 								fontSize: 15,
-								fontWeight: '700',
-								textAlign: 'right',
 								padding: 5,
+								textAlign: 'right',
 							}}
 						>
 							{data.item.message} (Eu {data.item.userDe})
@@ -159,6 +158,7 @@ export default function App() {
 								borderBottomWidth: 1,
 								fontSize: 15,
 								padding: 5,
+								fontWeight: '700',
 							}}
 						>
 							{'(' + data.item.userDe + ') ' + data.item.message}
@@ -167,22 +167,36 @@ export default function App() {
 				}
 				keyExtractor={(item, index) => index.toString()}
 			/>
-			<TextInput
-				style={{
-					height: 50,
-					width: 300,
-					textAlign: 'center',
-					marginBottom: 10,
-					borderColor: 'black',
-					borderWidth: 1,
-					backgroundColor: 'white',
-				}}
-				value={msg}
-				onChangeText={setMsg}
-			/>
-			<Button title="Enviar teste" onPress={onEnviarTeste}>
-				<Text>Enviar teste</Text>
-			</Button>
+			<View style={{ flex: 1, flexDirection: 'row', maxHeight: 50, padding: 0 }}>
+				<TextInput
+					style={{
+						height: 50,
+						width: 250,
+						textAlign: 'left',
+						marginBottom: 10,
+						borderColor: 'black',
+						borderWidth: 1,
+						backgroundColor: 'white',
+						paddingLeft: 10,
+					}}
+					value={msg}
+					onChangeText={setMsg}
+				/>
+				<TouchableOpacity
+					style={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: 50,
+						height: 50,
+						backgroundColor: 'blue',
+						marginLeft: 5,
+						borderRadius: 5,
+					}}
+					onPress={onEnviarTeste}
+				>
+					<Text style={{ color: 'white' }}> Send </Text>
+				</TouchableOpacity>
+			</View>
 			<StatusBar style="auto" />
 		</View>
 	);
@@ -195,6 +209,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		paddingBottom: 30,
-		paddingTop: 80,
+		paddingTop: 50,
 	},
 });
