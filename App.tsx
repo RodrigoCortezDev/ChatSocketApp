@@ -5,8 +5,8 @@ import socketIO from 'socket.io-client';
 
 interface MessagesInterface {
 	id: string;
-	userDe: string;
-	userPara: string;
+	userFromId: string;
+	userToId: string;
 	message: string;
 }
 
@@ -137,7 +137,7 @@ export default function App() {
 				}}
 				data={mensagems}
 				renderItem={data =>
-					data.item.userDe === userLogado ? (
+					data.item.userFromId === userLogado ? (
 						<Text
 							style={{
 								width: 300,
@@ -148,7 +148,7 @@ export default function App() {
 								textAlign: 'right',
 							}}
 						>
-							{data.item.message} (Eu {data.item.userDe})
+							{data.item.message} (Eu {data.item.userFromId})
 						</Text>
 					) : (
 						<Text
@@ -161,7 +161,7 @@ export default function App() {
 								fontWeight: '700',
 							}}
 						>
-							{'(' + data.item.userDe + ') ' + data.item.message}
+							{'(' + data.item.userFromId + ') ' + data.item.message}
 						</Text>
 					)
 				}
